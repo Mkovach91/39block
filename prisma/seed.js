@@ -3,7 +3,7 @@ const prisma = require("../prisma");
 const seed = async (numTasks = 3) => {
   const user = await prisma.user.create({
     data: {
-      userName: "test",
+      username: "test",
       password: "testpw",
     },
   });
