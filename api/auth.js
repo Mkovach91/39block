@@ -36,3 +36,30 @@ router.post("/register", async (req, res, next) => {
     next(error);
   }
 })
+
+router.post("/login", async (req, res, next) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await prisma.user.findUniqueOrThrow({ where: { username } });
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if(!isValidPassword) {
+      throw { status:401, message: "Invalid Password" };
+    }
+
+    const token = createToken(user.id);
+    res.json({ token });
+  } catch (error) {
+    next(error);
+  }
+});
+
+function authenticate(req, res, next) {
+  if (req.user) {
+    return next();
+  }
+  next({ status: 401, message: "You must be logged in" })
+}
+
+module.exports = { router, authenticate };
