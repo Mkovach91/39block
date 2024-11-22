@@ -35,18 +35,27 @@ router.post("/", authenticate, async (req, res, next) =>{
   }
 });
 
-router.delete('/:id', authenticate, async (req, res, next) => {
+router.delete("/:id", authenticate, async (req, res, next) => {
   const { id } = req.params;
 
   try {
     const task = await prisma.task.findUnique({
-      where: { id: +id }
+      where: { id: +id },
     });
 
-    if (!task || task.ownerId !== req.user.id) {
-      return res.status(403).json({ message: "Forbidden" });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
     }
-    res.status(204).send();
+
+    if (task.ownerId !== req.user.id) {
+      return res.status(403).json({ message: "You cant delete this task" });
+    }
+
+    await prisma.task.delete({
+      where: { id: +id },
+    });
+
+    res.json({ message: "Task deleted" });
   } catch (error) {
     next(error);
   }
@@ -54,15 +63,23 @@ router.delete('/:id', authenticate, async (req, res, next) => {
 
 router.put("/:id", authenticate, async (req, res, next) => {
   const { id } = req.params;
-  const  { name, done } = req.body;
+  const { name, done } = req.body;
 
   try {
     const task = await prisma.task.findUnique({
       where: { id: +id },
     });
 
-    if (!task || task.ownerId !== req.user.id) {
-      return res.status(403).json({ message: "Forbidden" });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    if (task.ownerId !== req.user.id) {
+      return res.status(403).json({ message: "You are not authorized to update this task" });
+    }
+
+    if (typeof name === "undefined" || typeof done === "undefined") {
+      return res.status(400).json({ message: "Both 'name' and 'done' fields are required" });
     }
 
     const updatedTask = await prisma.task.update({
@@ -76,4 +93,4 @@ router.put("/:id", authenticate, async (req, res, next) => {
   }
 });
 
-module.exports = router
+module.exports = router;

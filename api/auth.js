@@ -18,7 +18,8 @@ router.use(async (req, res, next) => {
   try {
     const { id } = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUniqueOrThrow({ where: { id }});
-    req.user = user
+    req.user = user;
+    next();
   } catch (error) {
     next({ status: 401, message: `You're not logged in` })
   }

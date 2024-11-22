@@ -38,7 +38,7 @@ DELETE http://localhost:3000/tasks/1
 Authorization: Bearer {{token}}
 
 ### Update a Task
-PUT http://localhost:3000/tasks/1
+PUT http://localhost:3000/tasks/3
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
