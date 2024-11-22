@@ -17,15 +17,14 @@ Content-Type: application/json
   "password": "testpassword"
 }
 
-@token = {{login.response.body.token}}
+
 
 ### Get All Tasks
-# @name getTasks
+@token = {{login.response.body.token}}
 GET http://localhost:3000/tasks
 Authorization: Bearer {{token}}
 
 ### Create a New Task
-# @name createTask
 POST http://localhost:3000/tasks
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -35,12 +34,10 @@ Authorization: Bearer {{token}}
 }
 
 ### Delete a Task
-# @name deleteTask
 DELETE http://localhost:3000/tasks/1
 Authorization: Bearer {{token}}
 
 ### Update a Task
-# @name updateTask
 PUT http://localhost:3000/tasks/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
