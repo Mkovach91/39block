@@ -16,3 +16,36 @@ Content-Type: application/json
   "username": "testuser",
   "password": "testpassword"
 }
+
+@token = {{login.response.body.token}}
+
+### Get All Tasks
+# @name getTasks
+GET http://localhost:3000/tasks
+Authorization: Bearer {{token}}
+
+### Create a New Task
+# @name createTask
+POST http://localhost:3000/tasks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Task Name"
+}
+
+### Delete a Task
+# @name deleteTask
+DELETE http://localhost:3000/tasks/1
+Authorization: Bearer {{token}}
+
+### Update a Task
+# @name updateTask
+PUT http://localhost:3000/tasks/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Task Name",
+  "done": true
+}
